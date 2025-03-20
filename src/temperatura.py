@@ -41,6 +41,14 @@ menu = st.sidebar.radio(
     ["Inicio", "Datos", "Visualización", "Configuración"]
 )
 
+if menu == "Inicio":
+    st.subheader("📄 Bienvenido al Dashboard de Larco")
+    readme_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "README.md"))
+    st.write(f"Ruta del README: {readme_path}")
+    with open(readme_path, "r", encoding="utf-8") as f:
+        readme_content = f.read()
+    st.markdown(readme_content, unsafe_allow_html=True)
+
 # 4. Mostrar los Datos
 if menu == "Datos":
     st.subheader("📂 Datos Generados")
@@ -151,24 +159,62 @@ if menu == "Visualización":
         st.markdown("---")
         col1, col2, col3, col4, col5 = st.columns(5)
 
-        # Mostrar KPIs en cajas
+        # Estilo CSS para los bordes
+        st.markdown("""
+            <style>
+            .main {
+                padding: 20px;
+                text-align: center; /* Centra el contenido del contenedor principal */
+            }
+            .stMetric {
+                background-color: #000000;
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center; /* Centra el contenido de la métrica */
+            }
+            div[data-testid="stMetricValue"] {
+                font-size: 20px !important;
+                text-align: center; /* Asegura que el valor esté centrado */
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+
+        # Mostrar KPIs en cajas con bordes y fechas
         with col1:
-            st.metric(label="📈 Temp. Máxima (°C)", value=f"{temp_max:.2f}")
-            st.metric(label="💧 Humedad Máxima (%)", value=f"{rh_max:.2f}")
-            
+            with st.container():
+                st.markdown('<div class="kpi-card">', unsafe_allow_html=True)
+                st.metric(label="📈 Temp. Máxima (°C)", value=f"{temp_max:.2f}", delta=f"Fecha: {data.loc[data['TEMP'].idxmax(), 'DATE'].strftime('%d/%m/%Y')}")
+                st.metric(label="💧 Humedad Máxima (%)", value=f"{rh_max:.2f}", delta=f"Fecha: {data.loc[data['RH'].idxmax(), 'DATE'].strftime('%d/%m/%Y')}")
+                st.markdown('</div>', unsafe_allow_html=True)
+
         with col2:
-            st.metric(label="📉 Temp. Mínima (°C)", value=f"{temp_min:.2f}")
-            st.metric(label="💧 Humedad Mínima (%)", value=f"{rh_min:.2f}")
-        
+            with st.container():
+                st.markdown('<div class="kpi-card">', unsafe_allow_html=True)
+                st.metric(label="📉 Temp. Mínima (°C)", value=f"{temp_min:.2f}", delta=f"Fecha: {data.loc[data['TEMP'].idxmin(), 'DATE'].strftime('%d/%m/%Y')}")
+                st.metric(label="💧 Humedad Mínima (%)", value=f"{rh_min:.2f}", delta=f"Fecha: {data.loc[data['RH'].idxmin(), 'DATE'].strftime('%d/%m/%Y')}")
+                st.markdown('</div>', unsafe_allow_html=True)
+
         with col3:
-            st.metric(label="🌡️ Temperatura Promedio (°C)", value=f"{temp_mean:.2f}")
-            st.metric(label="💨 Humedad Promedio (%)", value=f"{rh_mean:.2f}")
+            with st.container():
+                st.markdown('<div class="kpi-card">', unsafe_allow_html=True)
+                st.metric(label="🌡️ Temperatura Promedio (°C)", value=f"{temp_mean:.2f}")
+                st.metric(label="💨 Humedad Promedio (%)", value=f"{rh_mean:.2f}")
+                st.markdown('</div>', unsafe_allow_html=True)
+
         with col4:
-            st.metric(label="📊 Mediana Temp. (°C)", value=f"{temp_median:.2f}")
-            st.metric(label="📊 Mediana Humedad (%)", value=f"{rh_median:.2f}")
+            with st.container():
+                st.markdown('<div class="kpi-card">', unsafe_allow_html=True)
+                st.metric(label="📊 Mediana Temp. (°C)", value=f"{temp_median:.2f}")
+                st.metric(label="📊 Mediana Humedad (%)", value=f"{rh_median:.2f}")
+                st.markdown('</div>', unsafe_allow_html=True)
+
         with col5:
-            st.metric(label="🌡️ Desviación Std. Temp. (°C)", value=f"{temp_std:.2f}")
-            st.metric(label="💨 Desviación Std. Humedad (%)", value=f"{rh_std:.2f}")
+            with st.container():
+                st.markdown('<div class="kpi-card">', unsafe_allow_html=True)
+                st.metric(label="🌡️ Desviación Std. Temp. (°C)", value=f"{temp_std:.2f}")
+                st.metric(label="💨 Desviación Std. Humedad (%)", value=f"{rh_std:.2f}")
+                st.markdown('</div>', unsafe_allow_html=True)
 
 # 11. Ejecución del Script
 if __name__ == "__main__":
