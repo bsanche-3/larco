@@ -75,6 +75,23 @@ if menu == "Visualización":
         filtered_data = data
         st.rerun()
 
+    # 9. Implementar Pestañas
+    st.subheader("📌 Navegación entre Pestañas")
+    tab1, tab2 = st.tabs(["📊 Gráficos", "📂 Datos"])
+    with tab1:
+        st.subheader("Visualización de Datos")
+        fig_plotly = px.scatter(
+            filtered_data,
+            x="TEMP",
+            y="RH",
+            title="Relación entre temperatura y humedad",
+        )
+        st.plotly_chart(fig_plotly)
+    with tab2:
+        st.subheader("Datos Crudos")
+        st.dataframe(filtered_data)
+
+
 # 11. Ejecución del Script
 if __name__ == "__main__":
     st.sidebar.info("Ejecuta este script con: streamlit run d:/Usuario/Descargas/larco/src/temperatura.py")
