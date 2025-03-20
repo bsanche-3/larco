@@ -1,10 +1,7 @@
 streamlit
-numpy
 pandas
-matplotlib
-scipy
-seaborn
 plotly
 datetime
-google
 os
+seaborn
+matplotlib.pyplot
