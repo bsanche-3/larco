@@ -3,4 +3,4 @@ pandas
 plotly
 datetime
 seaborn
-matplotlib.pyplot
+matplotlib
