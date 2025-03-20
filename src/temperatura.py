@@ -1,8 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
 from datetime import datetime
 import os
@@ -56,21 +53,36 @@ if menu == "Visualización":
 
     if st.sidebar.button("Reiniciar Filtros"):
         filtered_data = data
+        fecha_inicio = min_date  # Restablecer fecha de inicio al mínimo disponible
+        fecha_fin = max_date  # Restablecer fecha de fin al máximo disponible
         st.rerun()
-
+    
     # 9. Implementar Pestañas
     st.subheader("📌 Navegación entre Pestañas")
     tab1, tab2 = st.tabs(["📊 Gráficos", "📂 Datos"])
     with tab1:
         st.subheader("Visualización de Datos")
-        fig_plotly = px.scatter(
-            filtered_data,
-            x="TEMP",
-            y="RH",
-            title="Relación entre temperatura y humedad",
-            labels={"TEMP": "Temperatura (°C)", "RH": "Humedad Relativa (%)"},
-        )
-        st.plotly_chart(fig_plotly)
+        
+        if st.checkbox("Mostrar Gráfico de Dispersión (TEMP vs RH)"):
+            fig_scatter = px.scatter(filtered_data, x="TEMP", y="RH", color="HOUR", title="Relación entre Temperatura y Humedad por Hora")
+            st.plotly_chart(fig_scatter)
+        
+        if st.checkbox("Mostrar Gráfico de Líneas"):
+            fig_line = px.line(filtered_data, x="DATE", y=["TEMP", "RH"], title="Evolución de la Temperatura y Humedad")
+            st.plotly_chart(fig_line)
+        
+        if st.checkbox("Mostrar Boxplot de Temperatura por Hora"):
+            fig_box = px.box(filtered_data, x="HOUR", y="TEMP", title="Distribución de Temperatura por Hora del Día")
+            st.plotly_chart(fig_box)
+        
+        if st.checkbox("Mostrar Histograma de Temperatura"):
+            fig_hist = px.histogram(filtered_data, x="TEMP", nbins=20, title="Distribución de la Temperatura")
+            st.plotly_chart(fig_hist)
+        
+        if st.checkbox("Mostrar Mapa de Calor"):
+            fig_heatmap = px.density_heatmap(filtered_data, x="HOUR", y="TEMP", z="RH", title="Mapa de Calor: Temperatura y Humedad por Hora")
+            st.plotly_chart(fig_heatmap)
+            
     with tab2:
         st.subheader("Datos Crudos")
         st.dataframe(filtered_data)
