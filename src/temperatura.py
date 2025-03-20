@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 st.set_page_config(
     page_title="Dashboard Temperaturas",
     page_icon="📊",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 st.title("📊 Dashboard Interactivo de Temperaturas")
 st.sidebar.title("🔍 Opciones de Navegación")
@@ -61,65 +62,33 @@ if menu == "Visualización":
     
     # 9. Implementar Pestañas
     st.subheader("📌 Navegación entre Pestañas")
-    tab1, tab2 = st.tabs(["📊 Gráficos", "📂 Datos"])
+    tab1, tab2, tab3 = st.tabs(["📊 Gráficos", "📂 Datos", "📈 Estadísticos"])
     with tab1:
         st.subheader("Visualización de Datos")
         
         if st.checkbox("Mostrar Gráfico de Dispersión (TEMP vs RH)"):
             st.markdown("📌 **Propósito**: Visualizar la relación entre temperatura y humedad a lo largo del día.")
-            fig_scatter = px.scatter(
-                filtered_data, 
-                x="TEMP", 
-                y="RH", 
-                color="HOUR", 
-                title="Relación entre Temperatura y Humedad por Hora",
-                labels={"TEMP": "Temperatura (°C)", "RH": "Humedad Relativa (%)", "HOUR": "Hora del Día"}
-            )
+            fig_scatter = px.scatter(filtered_data, x="TEMP", y="RH", color="HOUR", title="Relación entre Temperatura y Humedad por Hora")
             st.plotly_chart(fig_scatter)
 
         if st.checkbox("Mostrar Evolución de Temperatura y Humedad"):
             st.markdown("📌 **Propósito**: Analizar cómo evolucionan la temperatura y la humedad a lo largo del tiempo.")
-            fig_temp_hum = px.line(
-                filtered_data, 
-                x="DATE", 
-                y=["TEMP", "RH"], 
-                title="Evolución de Temperatura y Humedad",
-                labels={"DATE": "Fecha", "TEMP": "Temperatura (°C)", "RH": "Humedad Relativa (%)"}
-            )
+            fig_temp_hum = px.line(filtered_data, x="DATE", y=["TEMP", "RH"], title="Evolución de Temperatura y Humedad")
             st.plotly_chart(fig_temp_hum)
 
         if st.checkbox("Mostrar Boxplot de Temperatura por Hora"):
             st.markdown("📌 **Propósito**: Identificar la distribución de la temperatura a diferentes horas del día y detectar valores atípicos.")
-            fig_box = px.box(
-                filtered_data, 
-                x="HOUR", 
-                y="TEMP", 
-                title="Distribución de Temperatura por Hora del Día",
-                labels={"HOUR": "Hora del Día", "TEMP": "Temperatura (°C)"}
-            )
+            fig_box = px.box(filtered_data, x="HOUR", y="TEMP", title="Distribución de Temperatura por Hora del Día")
             st.plotly_chart(fig_box)
 
         if st.checkbox("Mostrar Histograma de Temperatura"):
             st.markdown("📌 **Propósito**: Mostrar la distribución de la temperatura y detectar patrones de frecuencia.")
-            fig_hist = px.histogram(
-                filtered_data, 
-                x="TEMP", 
-                nbins=20, 
-                title="Distribución de la Temperatura",
-                labels={"TEMP": "Temperatura (°C)"}
-            )
+            fig_hist = px.histogram(filtered_data, x="TEMP", nbins=20, title="Distribución de la Temperatura")
             st.plotly_chart(fig_hist)
 
         if st.checkbox("Mostrar Mapa de Calor"):
             st.markdown("📌 **Propósito**: Visualizar la densidad de temperatura y humedad en diferentes horas del día.")
-            fig_heatmap = px.density_heatmap(
-                filtered_data, 
-                x="HOUR", 
-                y="TEMP", 
-                z="RH", 
-                title="Mapa de Calor: Temperatura y Humedad por Hora",
-                labels={"HOUR": "Hora del Día", "TEMP": "Temperatura (°C)", "RH": "Humedad Relativa (%)"}
-            )
+            fig_heatmap = px.density_heatmap(filtered_data, x="HOUR", y="TEMP", z="RH", title="Mapa de Calor: Temperatura y Humedad por Hora")
             st.plotly_chart(fig_heatmap)
 
         if st.checkbox("Mostrar Mapa de Calor de Correlaciones"):
@@ -131,12 +100,7 @@ if menu == "Visualización":
 
         if st.checkbox("Mostrar Distribución de la Temperatura"):
             st.markdown("📌 **Propósito**: Examinar la dispersión de la temperatura y detectar posibles anomalías.")
-            fig_box = px.box(
-                filtered_data, 
-                y="TEMP", 
-                title="Distribución de la Temperatura",
-                labels={"TEMP": "Temperatura (°C)"}
-            )
+            fig_box = px.box(filtered_data, y="TEMP", title="Distribución de la Temperatura")
             st.plotly_chart(fig_box)
 
         if st.checkbox("Mostrar Temperatura Promedio por Hora"):
@@ -144,20 +108,67 @@ if menu == "Visualización":
             filtered_data["HOUR"] = pd.to_datetime(filtered_data["TIME"], format="%H:%M:%S").dt.hour
             temp_avg_hour = filtered_data.groupby("HOUR")["TEMP"].mean().reset_index()
 
-            fig_bar = px.bar(
-                temp_avg_hour, 
-                x="HOUR", 
-                y="TEMP", 
-                title="Temperatura Promedio por Hora", 
-                color="HOUR",
-                labels={"HOUR": "Hora del Día", "TEMP": "Temperatura Promedio (°C)"}
-            )
+            fig_bar = px.bar(temp_avg_hour, x="HOUR", y="TEMP", title="Temperatura Promedio por Hora", color="HOUR")
             st.plotly_chart(fig_bar)
 
     with tab2:
         st.subheader("Datos Crudos")
         st.dataframe(filtered_data)
+    
+    with tab3:
+        st.subheader("Estadísticas Descriptivas")
+        st.markdown("📌 **Propósito**: Ver estadísticas clave de las variables de temperatura y humedad.")
 
+        stats = filtered_data[["TEMP", "RH"]].describe().T  # Transponer para mejor visualización
+        stats.rename(columns={
+            "count": "Conteo",
+            "mean": "Promedio",
+            "std": "Desviación Estándar",
+            "min": "Mínimo",
+            "25%": "Percentil 25",
+            "50%": "Mediana",
+            "75%": "Percentil 75",
+            "max": "Máximo"
+        }, inplace=True)
+        
+        # Mostrar tabla en Streamlit
+        st.dataframe(stats)
+    
+        # Calcular métricas clave
+        temp_min = filtered_data["TEMP"].min()
+        temp_max = filtered_data["TEMP"].max()
+        temp_mean = filtered_data["TEMP"].mean()
+        temp_median = filtered_data["TEMP"].median()
+        temp_std = filtered_data["TEMP"].std()
+
+        rh_min = filtered_data["RH"].min()
+        rh_max = filtered_data["RH"].max()
+        rh_mean = filtered_data["RH"].mean()
+        rh_median = filtered_data["RH"].median()
+        rh_std = filtered_data["RH"].std()
+        
+        # Crear columnas para KPI Cards
+        st.markdown("---")
+        col1, col2, col3, col4, col5 = st.columns(5)
+
+        # Mostrar KPIs en cajas
+        with col1:
+            st.metric(label="📈 Temp. Máxima (°C)", value=f"{temp_max:.2f}")
+            st.metric(label="💧 Humedad Máxima (%)", value=f"{rh_max:.2f}")
+            
+        with col2:
+            st.metric(label="📉 Temp. Mínima (°C)", value=f"{temp_min:.2f}")
+            st.metric(label="💧 Humedad Mínima (%)", value=f"{rh_min:.2f}")
+        
+        with col3:
+            st.metric(label="🌡️ Temperatura Promedio (°C)", value=f"{temp_mean:.2f}")
+            st.metric(label="💨 Humedad Promedio (%)", value=f"{rh_mean:.2f}")
+        with col4:
+            st.metric(label="📊 Mediana Temp. (°C)", value=f"{temp_median:.2f}")
+            st.metric(label="📊 Mediana Humedad (%)", value=f"{rh_median:.2f}")
+        with col5:
+            st.metric(label="🌡️ Desviación Std. Temp. (°C)", value=f"{temp_std:.2f}")
+            st.metric(label="💨 Desviación Std. Humedad (%)", value=f"{rh_std:.2f}")
 
 # 11. Ejecución del Script
 if __name__ == "__main__":
