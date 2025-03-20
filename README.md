@@ -40,7 +40,7 @@ En esta sección se presentan los KPIs calculados a partir de los datos, proporc
 ![Inicio](images/image.png)
 ![Datos](images/image-1.png)
 ![Graficos](images/image-2.png)
-![KPI](image-3.png)
+![KPI](images/image-3.png)
 
 ## Contacto
 
