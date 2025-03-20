@@ -35,13 +35,10 @@ Aquí se muestran los datos crudos que se utilizan para generar los gráficos.
 
 En esta sección se presentan los KPIs calculados a partir de los datos, proporcionando una visión general de las métricas clave.
 
-## Capturas de Pantalla
-
-![Inicio](images/image.png)
-![Datos](images/image-1.png)
-![Graficos](images/image-2.png)
-![KPI](images/image-3.png)
-
 ## Contacto
 
 Para más información, puedes contactarnos en [mzuluaga@larco.co](mailto:mzuluaga@larco.co).
+
+## Pantallas
+
+## Capturas de Pantalla

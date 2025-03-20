@@ -47,7 +47,15 @@ if menu == "Inicio":
     st.write(f"Ruta del README: {readme_path}")
     with open(readme_path, "r", encoding="utf-8") as f:
         readme_content = f.read()
-    st.markdown(readme_content, unsafe_allow_html=True)
+    # Mostrar el texto del README sin imágenes
+    st.markdown(readme_content.split("## Capturas de Pantalla")[0], unsafe_allow_html=True)
+
+    # Mostrar las imágenes manualmente
+    image_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "images"))
+    st.image(os.path.join(image_dir, "image.png"), caption="Inicio")
+    st.image(os.path.join(image_dir, "image-1.png"), caption="Datos")
+    st.image(os.path.join(image_dir, "image-2.png"), caption="Gráficos")
+    st.image(os.path.join(image_dir, "image-3.png"), caption="KPI")
 
 # 4. Mostrar los Datos
 if menu == "Datos":
