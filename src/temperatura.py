@@ -47,31 +47,13 @@ if menu == "Datos":
     st.dataframe(data, height=500, use_container_width=True)
 
 # 5. Filtrar por Fecha
-data["DATE"] = pd.to_datetime(data["DATE"], format="%d/%m/%Y", dayfirst=True)
 filtered_data = data  # Asegurar que filtered_data esté definido en todo el script
 if menu == "Visualización":
     st.subheader("📅 Filtrar por Fecha")
+    min_date, max_date = data["DATE"].min().date(), data["DATE"].max().date()
+    fecha_inicio, fecha_fin = st.sidebar.date_input("Selecciona el rango de fechas:", [min_date, max_date], min_value=min_date, max_value=max_date)
+    filtered_data = filtered_data[(filtered_data["DATE"] >= pd.to_datetime(fecha_inicio)) & (filtered_data["DATE"] <= pd.to_datetime(fecha_fin))]
 
-    # Convertir las fechas a tipo date
-    min_date = data["DATE"].min().date()
-    max_date = data["DATE"].max().date()
-
-    fecha_inicio, fecha_fin = st.sidebar.date_input(
-        "Selecciona el rango de fechas:",
-        [min_date, max_date],
-        min_value=min_date,
-        max_value=max_date
-    )
-
-    # Convertir fecha_inicio y fecha_fin a datetime para la comparación
-    fecha_inicio = pd.to_datetime(fecha_inicio)
-    fecha_fin = pd.to_datetime(fecha_fin)
-
-    filtered_data = filtered_data[
-        (filtered_data["DATE"] >= fecha_inicio) & (filtered_data["DATE"] <= fecha_fin)
-    ]
-    
-     # 8. Botón para Reiniciar Filtros
     if st.sidebar.button("Reiniciar Filtros"):
         filtered_data = data
         st.rerun()
