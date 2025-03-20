@@ -20,19 +20,16 @@ st.sidebar.title("🔍 Opciones de Navegación")
 @st.cache_data
 def load_data():
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    print("Ruta actual:", os.getcwd())
-
     file_path = "../data/RHT20 02-21-25 _16.26.11_HOTEL_NOCK.csv"
-
-    if os.path.exists(file_path):
-        print(f"El archivo {file_path} existe.")
-    else:
-        print(f"⚠️ El archivo {file_path} NO existe. Verifica la ruta.")
+    if not os.path.exists(file_path):
+        st.error(f"⚠️ El archivo {file_path} NO existe. Verifica la ruta.")
+        return None
     df = pd.read_csv(file_path)
     return df
 
 data = load_data()
-
+if data is None:
+    st.stop()
 
 # 3. Implementación de la Barra de Navegación
 menu = st.sidebar.radio(
@@ -85,6 +82,7 @@ if menu == "Visualización":
             x="TEMP",
             y="RH",
             title="Relación entre temperatura y humedad",
+            labels={"TEMP": "Temperatura (°C)", "RH": "Humedad Relativa (%)"},
         )
         st.plotly_chart(fig_plotly)
     with tab2:
