@@ -31,6 +31,10 @@ data = load_data()
 if data is None:
     st.stop()
 
+# Convertir columnas
+data["DATE"] = pd.to_datetime(data["DATE"], format="%d/%m/%Y", dayfirst=True)
+data["HOUR"] = pd.to_datetime(data["TIME"], format="%H:%M:%S").dt.hour.astype(str)
+
 # 3. Implementación de la Barra de Navegación
 menu = st.sidebar.radio(
     "Selecciona una opción:",
