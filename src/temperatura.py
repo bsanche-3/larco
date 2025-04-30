@@ -43,7 +43,8 @@ menu = st.sidebar.radio(
 
 if menu == "Inicio":
     st.subheader("📄 Bienvenido al Dashboard de Larco")
-    readme_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "README.md"))
+    #readme_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "README.md"))
+    readme_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "README.md"))
     st.write(f"Ruta del README: {readme_path}")
     with open(readme_path, "r", encoding="utf-8") as f:
         readme_content = f.read()
